@@ -23,7 +23,8 @@ if (!envValidation.success) {
         if (
             [
                 "PORT",
-                "DATABASE_URL"
+                "DATABASE_URL",
+                "REDIS_URL"
             ].includes(key)
         ) {
             console.error(`  ${key}: ${value ? "✅" : "❌"}`);
@@ -36,7 +37,8 @@ if (!envValidation.success) {
 
 export const config = {
     port: envValidation.data.PORT,
-    db_url: envValidation.data.DATABASE_URL
+    db_url: envValidation.data.DATABASE_URL,
+    redis_url: envValidation.data.REDIS_URL
 } as const;
 
 console.log("✅ Configuration loaded successfully");

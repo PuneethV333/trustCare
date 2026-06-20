@@ -4,6 +4,6 @@ import { PrismaClient } from "@prisma/client/extension";
 
 
 const adapter = new PrismaPg(config.db_url)
-const prisma = new PrismaClient({adapter})
+const prisma = new PrismaClient({ adapter })
 
-export {prisma}
+export { prisma }
