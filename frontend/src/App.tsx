@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   BrowserRouter,
   Routes,
   Route,
   Navigate,
   Link,
-  useLocation } from
-'react-router-dom';
+  useLocation,
+} from "react-router-dom";
 import {
   Shield,
   Home,
@@ -21,11 +21,11 @@ import {
   X,
   LogOut,
   Settings,
-  Bell } from
-'lucide-react';
-import { Button } from './components/ui/Button';
-import { Avatar, AvatarFallback, AvatarImage } from './components/ui/Avatar';
-import { Sheet, SheetContent, SheetTrigger } from './components/ui/Sheet';
+  Bell,
+} from "lucide-react";
+import { Button } from "./components/ui/Button";
+import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/Avatar";
+import { Sheet, SheetContent, SheetTrigger } from "./components/ui/Sheet";
 import {
   Sidebar,
   SidebarContent,
@@ -36,72 +36,72 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-  SidebarTrigger } from
-'./components/ui/Sidebar';
+  SidebarTrigger,
+} from "./components/ui/Sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger } from
-'./components/ui/DropdownMenu';
+  DropdownMenuTrigger,
+} from "./components/ui/DropdownMenu";
 // --- PLACEHOLDER PAGES ---
-import HomePage from './pages/Household/Home';
-import LoginPage from './pages/Household/Login';
-import BrowsePage from './pages/Household/Browse';
-import ProfileDetailPage from './pages/Household/ProfileDetail';
-import BookingFlowPage from './pages/Household/BookingFlow';
-import MyBookingsPage from './pages/Household/MyBookings';
-import AccountPage from './pages/Household/Account';
-import HelperDashboardPage from './pages/Helper/Dashboard';
-import HelperProfileSetupPage from './pages/Helper/ProfileSetup';
-import HelperJobHistoryPage from './pages/Helper/JobHistory';
-import AdminDashboardPage from './pages/Admin/Dashboard';
-import AdminVerificationQueuePage from './pages/Admin/VerificationQueue';
-import AdminManageUsersPage from './pages/Admin/ManageUsers';
+import HomePage from "./pages/Household/Home";
+import LoginPage from "./pages/Household/Login";
+import BrowsePage from "./pages/Household/Browse";
+import ProfileDetailPage from "./pages/Household/ProfileDetail";
+import BookingFlowPage from "./pages/Household/BookingFlow";
+import MyBookingsPage from "./pages/Household/MyBookings";
+import AccountPage from "./pages/Household/Account";
+import HelperDashboardPage from "./pages/Helper/Dashboard";
+import HelperProfileSetupPage from "./pages/Helper/ProfileSetup";
+import HelperJobHistoryPage from "./pages/Helper/JobHistory";
+import AdminDashboardPage from "./pages/Admin/Dashboard";
+import AdminVerificationQueuePage from "./pages/Admin/VerificationQueue";
+import AdminManageUsersPage from "./pages/Admin/ManageUsers";
 // --- ROLE SWITCHER COMPONENT ---
 function RoleSwitcher() {
   const location = useLocation();
-  const currentRole = location.pathname.startsWith('/admin') ?
-  'admin' :
-  location.pathname.startsWith('/helper') ?
-  'helper' :
-  'household';
+  const currentRole = location.pathname.startsWith("/admin")
+    ? "admin"
+    : location.pathname.startsWith("/helper")
+      ? "helper"
+      : "household";
   return (
     <div className="fixed bottom-4 right-4 z-50 bg-card border shadow-lg rounded-full p-1 flex items-center gap-1">
       <Link to="/">
         <Button
-          variant={currentRole === 'household' ? 'default' : 'ghost'}
+          variant={currentRole === "household" ? "default" : "ghost"}
           size="sm"
-          className="rounded-full px-4">
-          
+          className="rounded-full px-4"
+        >
           Household
         </Button>
       </Link>
       <Link to="/helper">
         <Button
-          variant={currentRole === 'helper' ? 'default' : 'ghost'}
+          variant={currentRole === "helper" ? "default" : "ghost"}
           size="sm"
-          className="rounded-full px-4">
-          
+          className="rounded-full px-4"
+        >
           Helper
         </Button>
       </Link>
       <Link to="/admin">
         <Button
-          variant={currentRole === 'admin' ? 'default' : 'ghost'}
+          variant={currentRole === "admin" ? "default" : "ghost"}
           size="sm"
-          className="rounded-full px-4">
-          
+          className="rounded-full px-4"
+        >
           Admin
         </Button>
       </Link>
-    </div>);
-
+    </div>
+  );
 }
 // --- LAYOUTS ---
-function HouseholdLayout({ children }: {children: React.ReactNode;}) {
+function HouseholdLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans">
       <header className="sticky top-0 z-40 w-full border-b bg-card/80 backdrop-blur-md">
@@ -115,20 +115,20 @@ function HouseholdLayout({ children }: {children: React.ReactNode;}) {
           <nav className="hidden md:flex items-center gap-6">
             <Link
               to="/browse"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
               Find a Helper
             </Link>
             <Link
               to="/how-it-works"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
               How it Works
             </Link>
             <Link
               to="/trust"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
               Trust & Safety
             </Link>
           </nav>
@@ -146,13 +146,14 @@ function HouseholdLayout({ children }: {children: React.ReactNode;}) {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-8 w-8 rounded-full">
-                  
+                  className="relative h-8 w-8 rounded-full"
+                >
                   <Avatar className="h-8 w-8 border border-border">
                     <AvatarImage
                       src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-                      alt="@user" />
-                    
+                      alt="@user"
+                    />
+
                     <AvatarFallback>U</AvatarFallback>
                   </Avatar>
                 </Button>
@@ -172,8 +173,8 @@ function HouseholdLayout({ children }: {children: React.ReactNode;}) {
                 <DropdownMenuItem asChild>
                   <Link
                     to="/bookings"
-                    className="cursor-pointer w-full flex items-center">
-                    
+                    className="cursor-pointer w-full flex items-center"
+                  >
                     <Calendar className="mr-2 h-4 w-4" />
                     <span>My Bookings</span>
                   </Link>
@@ -181,8 +182,8 @@ function HouseholdLayout({ children }: {children: React.ReactNode;}) {
                 <DropdownMenuItem asChild>
                   <Link
                     to="/account"
-                    className="cursor-pointer w-full flex items-center">
-                    
+                    className="cursor-pointer w-full flex items-center"
+                  >
                     <User className="mr-2 h-4 w-4" />
                     <span>Account Settings</span>
                   </Link>
@@ -266,8 +267,8 @@ function HouseholdLayout({ children }: {children: React.ReactNode;}) {
               <li>
                 <Link
                   to="/browse?type=babysitter"
-                  className="hover:text-primary">
-                  
+                  className="hover:text-primary"
+                >
                   Babysitters
                 </Link>
               </li>
@@ -310,71 +311,72 @@ function HouseholdLayout({ children }: {children: React.ReactNode;}) {
           </div>
         </div>
       </footer>
-    </div>);
-
+    </div>
+  );
 }
 function DashboardLayout({
   children,
-  role
-
-
-
-}: {children: React.ReactNode;role: 'helper' | 'admin';}) {
+  role,
+}: {
+  children: React.ReactNode;
+  role: "helper" | "admin";
+}) {
   const menuItems =
-  role === 'helper' ?
-  [
-  {
-    title: 'Dashboard',
-    icon: LayoutDashboard,
-    url: '/helper'
-  },
-  {
-    title: 'Job Requests',
-    icon: Bell,
-    url: '/helper/requests'
-  },
-  {
-    title: 'My Schedule',
-    icon: Calendar,
-    url: '/helper/schedule'
-  },
-  {
-    title: 'Job History',
-    icon: FileText,
-    url: '/helper/history'
-  },
-  {
-    title: 'Profile & Docs',
-    icon: User,
-    url: '/helper/profile'
-  }] :
-
-  [
-  {
-    title: 'Dashboard',
-    icon: LayoutDashboard,
-    url: '/admin'
-  },
-  {
-    title: 'Verification Queue',
-    icon: CheckCircle,
-    url: '/admin/verifications'
-  },
-  {
-    title: 'Manage Users',
-    icon: Users,
-    url: '/admin/users'
-  },
-  {
-    title: 'Bookings & Disputes',
-    icon: FileText,
-    url: '/admin/bookings'
-  },
-  {
-    title: 'Settings',
-    icon: Settings,
-    url: '/admin/settings'
-  }];
+    role === "helper"
+      ? [
+          {
+            title: "Dashboard",
+            icon: LayoutDashboard,
+            url: "/helper",
+          },
+          {
+            title: "Job Requests",
+            icon: Bell,
+            url: "/helper/requests",
+          },
+          {
+            title: "My Schedule",
+            icon: Calendar,
+            url: "/helper/schedule",
+          },
+          {
+            title: "Job History",
+            icon: FileText,
+            url: "/helper/history",
+          },
+          {
+            title: "Profile & Docs",
+            icon: User,
+            url: "/helper/profile",
+          },
+        ]
+      : [
+          {
+            title: "Dashboard",
+            icon: LayoutDashboard,
+            url: "/admin",
+          },
+          {
+            title: "Verification Queue",
+            icon: CheckCircle,
+            url: "/admin/verifications",
+          },
+          {
+            title: "Manage Users",
+            icon: Users,
+            url: "/admin/users",
+          },
+          {
+            title: "Bookings & Disputes",
+            icon: FileText,
+            url: "/admin/bookings",
+          },
+          {
+            title: "Settings",
+            icon: Settings,
+            url: "/admin/settings",
+          },
+        ];
 
   return (
     <SidebarProvider>
@@ -384,9 +386,9 @@ function DashboardLayout({
             <div className="p-4 flex items-center gap-2 text-primary">
               <Shield className="h-6 w-6 text-accent" />
               <span className="font-bold text-xl tracking-tight">
-                TrustCare{' '}
+                TrustCare{" "}
                 <span className="text-sm font-normal text-muted-foreground">
-                  {role === 'admin' ? 'Admin' : 'Partner'}
+                  {role === "admin" ? "Admin" : "Partner"}
                 </span>
               </span>
             </div>
@@ -394,8 +396,8 @@ function DashboardLayout({
               <SidebarGroupLabel>Menu</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {menuItems.map((item) =>
-                  <SidebarMenuItem key={item.title}>
+                  {menuItems.map((item) => (
+                    <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild>
                         <Link to={item.url}>
                           <item.icon />
@@ -403,7 +405,7 @@ function DashboardLayout({
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
-                  )}
+                  ))}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -414,7 +416,7 @@ function DashboardLayout({
             <div className="flex items-center gap-4">
               <SidebarTrigger />
               <h1 className="font-semibold text-lg hidden sm:block">
-                {role === 'admin' ? 'Admin Portal' : 'Helper Dashboard'}
+                {role === "admin" ? "Admin Portal" : "Helper Dashboard"}
               </h1>
             </div>
             <div className="flex items-center gap-4">
@@ -424,20 +426,21 @@ function DashboardLayout({
               <Avatar className="h-8 w-8 border border-border">
                 <AvatarImage
                   src={
-                  role === 'admin' ?
-                  'https://i.pravatar.cc/150?u=admin' :
-                  'https://i.pravatar.cc/150?u=helper'
-                  } />
-                
-                <AvatarFallback>{role === 'admin' ? 'A' : 'H'}</AvatarFallback>
+                    role === "admin"
+                      ? "https://i.pravatar.cc/150?u=admin"
+                      : "https://i.pravatar.cc/150?u=helper"
+                  }
+                />
+
+                <AvatarFallback>{role === "admin" ? "A" : "H"}</AvatarFallback>
               </Avatar>
             </div>
           </header>
           <main className="flex-1 p-4 md:p-6 overflow-auto">{children}</main>
         </div>
       </div>
-    </SidebarProvider>);
-
+    </SidebarProvider>
+  );
 }
 export function App() {
   return (
@@ -447,129 +450,141 @@ export function App() {
         <Route
           path="/"
           element={
-          <HouseholdLayout>
+            <HouseholdLayout>
               <HomePage />
             </HouseholdLayout>
-          } />
-        
+          }
+        />
+
         <Route
           path="/login"
           element={
-          <HouseholdLayout>
+            <HouseholdLayout>
               <LoginPage />
             </HouseholdLayout>
-          } />
-        
+          }
+        />
+
         <Route
           path="/browse"
           element={
-          <HouseholdLayout>
+            <HouseholdLayout>
               <BrowsePage />
             </HouseholdLayout>
-          } />
-        
+          }
+        />
+
         <Route
           path="/helper/:id"
           element={
-          <HouseholdLayout>
+            <HouseholdLayout>
               <ProfileDetailPage />
             </HouseholdLayout>
-          } />
-        
+          }
+        />
+
         <Route
           path="/book/:id"
           element={
-          <HouseholdLayout>
+            <HouseholdLayout>
               <BookingFlowPage />
             </HouseholdLayout>
-          } />
-        
+          }
+        />
+
         <Route
           path="/bookings"
           element={
-          <HouseholdLayout>
+            <HouseholdLayout>
               <MyBookingsPage />
             </HouseholdLayout>
-          } />
-        
+          }
+        />
+
         <Route
           path="/account"
           element={
-          <HouseholdLayout>
+            <HouseholdLayout>
               <AccountPage />
             </HouseholdLayout>
-          } />
-        
+          }
+        />
 
         {/* HELPER ROUTES */}
         <Route
           path="/helper"
           element={
-          <DashboardLayout role="helper">
+            <DashboardLayout role="helper">
               <HelperDashboardPage />
             </DashboardLayout>
-          } />
-        
+          }
+        />
+
         <Route
           path="/helper/profile"
           element={
-          <DashboardLayout role="helper">
+            <DashboardLayout role="helper">
               <HelperProfileSetupPage />
             </DashboardLayout>
-          } />
-        
+          }
+        />
+
         <Route
           path="/helper/history"
           element={
-          <DashboardLayout role="helper">
+            <DashboardLayout role="helper">
               <HelperJobHistoryPage />
             </DashboardLayout>
-          } />
-        
+          }
+        />
+
         <Route
           path="/helper/*"
           element={
-          <DashboardLayout role="helper">
+            <DashboardLayout role="helper">
               <Navigate to="/helper" replace />
             </DashboardLayout>
-          } />
-        
+          }
+        />
 
         {/* ADMIN ROUTES */}
         <Route
           path="/admin"
           element={
-          <DashboardLayout role="admin">
+            <DashboardLayout role="admin">
               <AdminDashboardPage />
             </DashboardLayout>
-          } />
-        
+          }
+        />
+
         <Route
           path="/admin/verifications"
           element={
-          <DashboardLayout role="admin">
+            <DashboardLayout role="admin">
               <AdminVerificationQueuePage />
             </DashboardLayout>
-          } />
-        
+          }
+        />
+
         <Route
           path="/admin/users"
           element={
-          <DashboardLayout role="admin">
+            <DashboardLayout role="admin">
               <AdminManageUsersPage />
             </DashboardLayout>
-          } />
-        
+          }
+        />
+
         <Route
           path="/admin/*"
           element={
-          <DashboardLayout role="admin">
+            <DashboardLayout role="admin">
               <Navigate to="/admin" replace />
             </DashboardLayout>
-          } />
-        
+          }
+        />
       </Routes>
       <RoleSwitcher />
-    </BrowserRouter>);
-
+    </BrowserRouter>
+  );
 }

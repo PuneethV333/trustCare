@@ -141,7 +141,7 @@ export default function HelperDashboardPage() {
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <h4 className="font-semibold">{req.name}</h4>
-                    <Badge variant="secondary">{req.plan}</Badge>
+                    <Badge variant="secondary">{req.plan}</Badge>   
                   </div>
                   <div className="text-sm text-muted-foreground space-y-1">
                     <p className="flex items-center">
