@@ -48,7 +48,4 @@ app.use((_: Request, res: Response) => {
 
 app.use(errorHandling);
 
-
-
-
-app.use(redisMiddleWare)
+export default app
