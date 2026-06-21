@@ -25,7 +25,10 @@ if (!envValidation.success) {
                 "PORT",
                 "DATABASE_URL",
                 "REDIS_URL",
-                "FRONTEND_URL"
+                "FRONTEND_URL",
+                "FIREBASE_PROJECT_ID",
+                "FIREBASE_CLIENT_EMAIL",
+                "FIREBASE_PRIVATE_KEY",
             ].includes(key)
         ) {
             console.error(`  ${key}: ${value ? "✅" : "❌"}`);
@@ -41,7 +44,9 @@ export const config = {
     db_url: envValidation.data.DATABASE_URL,
     redis_url: envValidation.data.REDIS_URL,
     frontendUrl: envValidation.data.FRONTEND_URL,
-    
+    firebaseProjectId: envValidation.data.FIREBASE_PROJECT_ID,
+    firebaseClientEmail: envValidation.data.FIREBASE_CLIENT_EMAIL,
+    firebasePrivateKey: envValidation.data.FIREBASE_PRIVATE_KEY,
 } as const;
 
 console.log("✅ Configuration loaded successfully");

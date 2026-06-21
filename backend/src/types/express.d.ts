@@ -5,7 +5,7 @@ declare global {
         interface Request {
             user?: {
                 firebaseUid: string,
-                role?: "Maid" | "User" | undefined
+                // role?: "Maid" | "User" | undefined
             }
         }
     }

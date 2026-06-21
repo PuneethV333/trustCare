@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   BrowserRouter,
   Routes,
@@ -9,8 +9,6 @@ import {
 } from "react-router-dom";
 import {
   Shield,
-  Home,
-  Search,
   Calendar,
   User,
   LayoutDashboard,
@@ -18,7 +16,6 @@ import {
   Users,
   CheckCircle,
   Menu,
-  X,
   LogOut,
   Settings,
   Bell,
