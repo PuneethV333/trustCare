@@ -7,6 +7,7 @@ import { redisMiddleWare } from "./middleware/redis.middleware"
 import helmet from "helmet"
 import rateLimit from "express-rate-limit"
 import { errorHandling } from "./middleware/error.middleware"
+import { authRouter } from "./routes/auth.routes"
 
 const app = express()
 
@@ -34,6 +35,9 @@ app.use(
 );
 
 app.use(redisMiddleWare);
+
+
+app.use("/api/auth", authRouter)
 
 app.get("/test", (_: Request, res: Response) => {
     res.send("Server is running");

@@ -15,10 +15,16 @@ export const authMiddleWare = async (req: Request, res: Response, next: NextFunc
     try {
         const decodedToken = await admin.auth().verifyIdToken(token);
 
+        if (!decodedToken?.uid) {
+            return res.status(401).json({
+                message: "Unauthorized"
+            })
+        }
 
         req.user = {
             firebaseUid: decodedToken.uid
         }
+        next()
     } catch (err) {
         console.error("Firebase Token Verification Error:", err);
 
