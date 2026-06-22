@@ -3,51 +3,73 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+    provider = "prisma-client"
+    output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+    provider = "postgresql"
 }
 
 enum roles {
-  USER
-  HELPER
-  ADMIN
+    USER
+    HELPER
+    ADMIN
 }
 
 model User {
-  id          String       @id @default(uuid())
-  name        String
-  email       String       @unique
-  role        roles        @default(USER)
-  maidProfile MaidProfile?
-  phoneNumber String
-  firebaseUid String       @unique
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  profilePic  String       @default("https://ui-avatars.com/api/?name=User&background=random")
+    id          String       @id @default(uuid())
+    name        String
+    email       String       @unique
+    role        roles        @default(USER)
+    maidProfile MaidProfile?
+    phoneNumber String
+    firebaseUid String       @unique
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
+    profilePic  String       @default("https://ui-avatars.com/api/?name=User&background=random")
 }
 
 enum type {
-  nanny
-  maid
-  babysitter
+    nanny
+    maid
+    babysitter
 }
 
 model MaidProfile {
-  id                String   @id @default(uuid())
-  userId            String   @unique
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type              type     @default(maid)
-  bio               String?
-  experience        Int?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  skill             String[]
-  rating            Int      @default(0)
-  costPerHour       String
-  isVerified        Boolean  @default(false)
-  profileCompletion Float    @default(0)
+    id     String @id @default(uuid())
+    userId String @unique
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    type       type    @default(maid)
+    bio        String?
+    experience Int?
+
+    city String?
+    area String?
+
+    skill       String[]
+    costPerHour String
+
+    averageRating Float @default(0)
+    totalReviews  Int   @default(0)
+
+    isVerified        Boolean @default(false)
+    profileCompletion Float   @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    reviews Review[]
+}
+
+model Review {
+    id      String  @id @default(cuid())
+    rating  Int
+    comment String?
+
+    profileId   String
+    maidProfile MaidProfile @relation(fields: [profileId], references: [id])
+
+    createdAt DateTime @default(now())
 }

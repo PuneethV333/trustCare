@@ -8,6 +8,7 @@ import helmet from "helmet"
 import rateLimit from "express-rate-limit"
 import { errorHandling } from "./middleware/error.middleware"
 import { authRouter } from "./routes/auth.routes"
+import { maidRoute } from "./routes/maid.routes"
 
 const app = express()
 
@@ -38,6 +39,7 @@ app.use(redisMiddleWare);
 
 
 app.use("/api/auth", authRouter)
+app.use("/api/maid", maidRoute)
 
 app.get("/test", (_: Request, res: Response) => {
     res.send("Server is running");

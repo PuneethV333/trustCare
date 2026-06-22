@@ -4,8 +4,11 @@ import { config } from "./src/config/data.config"
 import { defineConfig } from "prisma/config";
 
 export default defineConfig({
+
     schema: "prisma/schema.prisma",
     migrations: {
+          seed: "npx tsx prisma/seed.js",
+
         path: "prisma/migrations",
     },
     datasource: {

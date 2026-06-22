@@ -18,7 +18,6 @@ import { Auth } from "../config/firebase.config";
 import { useQueryClient } from "@tanstack/react-query";
 
 export function HouseholdLayout({ children }: { children: React.ReactNode }) {
-  // inside HouseholdLayout:
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
