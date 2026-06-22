@@ -9,6 +9,7 @@ import rateLimit from "express-rate-limit"
 import { errorHandling } from "./middleware/error.middleware"
 import { authRouter } from "./routes/auth.routes"
 import { maidRoute } from "./routes/maid.routes"
+import { userRoute } from "./routes/user.routes"
 
 const app = express()
 
@@ -40,6 +41,7 @@ app.use(redisMiddleWare);
 
 app.use("/api/auth", authRouter)
 app.use("/api/maid", maidRoute)
+app.use("/api/user", userRoute)
 
 app.get("/test", (_: Request, res: Response) => {
     res.send("Server is running");

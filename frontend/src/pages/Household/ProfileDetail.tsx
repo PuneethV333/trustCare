@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React from "react";
+import { Link, useParams } from "react-router-dom";
 import {
   ShieldCheck,
   Star,
@@ -8,58 +8,68 @@ import {
   CheckCircle2,
   ChevronLeft,
   Calendar as CalendarIcon,
-  FileText } from
-'lucide-react';
-import { Button } from '../../components/ui/Button';
+  FileText,
+} from "lucide-react";
+import { Button } from "../../components/ui/Button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-  CardFooter } from
-'../../components/ui/Card';
-import { Badge } from '../../components/ui/Badge';
-import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/Avatar';
+  CardFooter,
+} from "../../components/ui/Card";
+import { Badge } from "../../components/ui/Badge";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/Avatar";
 import {
   Tabs,
   TabsContent,
   TabsList,
-  TabsTrigger } from
-'../../components/ui/Tabs';
-import { Separator } from '../../components/ui/Separator';
+  TabsTrigger,
+} from "../../components/ui/Tabs";
+import { useGetUser } from "../../hooks/useUser";
 export default function ProfileDetailPage() {
   const { id } = useParams();
+  
+  const {data:helper} = useGetUser(id ?? "");
+  if (!id) {
+    return null;
+  }
   // Mock data
-  const helper = {
-    name: 'Sunita Devi',
-    type: 'Maid & Cook',
-    location: 'Andheri West, Mumbai',
-    exp: '5 years',
-    rating: 4.9,
-    reviews: 124,
-    img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop',
-    bio: 'I am a reliable and hardworking domestic helper with 5 years of experience in housekeeping and cooking. I specialize in North Indian and Maharashtrian cuisine. I am very particular about hygiene and maintain a clean environment. I am also comfortable around pets.',
-    skills: [
-    'Sweeping & Mopping',
-    'Dusting',
-    'Laundry',
-    'North Indian Cooking',
-    'Pet Friendly'],
+//   const helper = {
+//     name: "Sunita Devi",
+//     type: "Maid & Cook",
+//     location: "Andheri West, Mumbai",
+//     exp: "5 years",
+//     rating: 4.9,
+//     reviews: 124,
+//     img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop",
+//     bio: "I am a reliable and hardworking domestic helper with 5 years of experience in housekeeping and cooking. I specialize in North Indian and Maharashtrian cuisine. I am very particular about hygiene and maintain a clean environment. I am also comfortable around pets.",
+//     skills: [
+//       "Sweeping & Mopping",
+//       "Dusting",
+//       "Laundry",
+//       "North Indian Cooking",
+//       "Pet Friendly",
+//     ],
 
-    languages: ['Hindi', 'Marathi', 'Basic English'],
-    verified: true,
-    bgChecked: true,
-    idVerified: true
-  };
+//     languages: ["Hindi", "Marathi", "Basic English"],
+//     verified: true,
+//     bgChecked: true,
+//     idVerified: true,
+//   };
   return (
     <div className="bg-muted/10 min-h-screen pb-20">
       <div className="bg-card border-b">
         <div className="container mx-auto px-4 py-4">
           <Link
             to="/browse"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
-            
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+          >
             <ChevronLeft className="h-4 w-4 mr-1" /> Back to Search
           </Link>
         </div>
@@ -72,47 +82,47 @@ export default function ProfileDetailPage() {
             {/* Header Card */}
             <Card className="border-none shadow-md overflow-hidden">
               <div className="h-32 bg-primary/10 relative">
-                {helper.verified &&
-                <div className="absolute top-4 right-4 bg-card px-3 py-1 rounded-full flex items-center gap-1 shadow-sm text-sm font-medium text-primary">
+                {helper?.maidProfile.isVerified && (
+                  <div className="absolute top-4 right-4 bg-card px-3 py-1 rounded-full flex items-center gap-1 shadow-sm text-sm font-medium text-primary">
                     <ShieldCheck className="h-4 w-4 text-accent" />
                     TrustCare Verified
                   </div>
-                }
+                )}
               </div>
               <CardContent className="pt-0 relative px-6 sm:px-8">
                 <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-end -mt-12 mb-6">
                   <Avatar className="h-24 w-24 border-4 border-card shadow-md">
-                    <AvatarImage src={helper.img} />
-                    <AvatarFallback>{helper.name[0]}</AvatarFallback>
+                    <AvatarImage src={helper?.profilePic} />
+                    <AvatarFallback>{helper?.name[0]}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 pb-2">
-                    <h1 className="text-2xl font-bold">{helper.name}</h1>
+                    <h1 className="text-2xl font-bold">{helper?.name}</h1>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground mt-1 text-sm">
                       <span className="flex items-center">
-                        <MapPin className="h-4 w-4 mr-1" /> {helper.location}
+                        <MapPin className="h-4 w-4 mr-1" /> {helper?.maidProfile.area}
                       </span>
                       <span className="flex items-center">
-                        <Clock className="h-4 w-4 mr-1" /> {helper.exp}{' '}
+                        <Clock className="h-4 w-4 mr-1" /> {helper?.maidProfile.experience}{" "}
                         Experience
                       </span>
                       <span className="flex items-center text-foreground font-medium">
-                        <Star className="h-4 w-4 mr-1 fill-accent text-accent" />{' '}
-                        {helper.rating} ({helper.reviews} reviews)
+                        <Star className="h-4 w-4 mr-1 fill-accent text-accent" />{" "}
+                        {helper?.maidProfile.averageRating} ({helper?.maidProfile.totalReviews} reviews)
                       </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {helper.skills.map((skill) =>
-                  <Badge
-                    key={skill}
-                    variant="secondary"
-                    className="font-normal">
-                    
+                  {helper?.maidProfile.skill.map((skill) => (
+                    <Badge
+                      key={skill}
+                      variant="secondary"
+                      className="font-normal"
+                    >
                       {skill}
                     </Badge>
-                  )}
+                  ))}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t pt-6">
@@ -160,53 +170,47 @@ export default function ProfileDetailPage() {
                   <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0 h-auto">
                     <TabsTrigger
                       value="about"
-                      className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-4">
-                      
+                      className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-4"
+                    >
                       About
                     </TabsTrigger>
                     <TabsTrigger
                       value="reviews"
-                      className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-4">
-                      
-                      Reviews ({helper.reviews})
+                      className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-4"
+                    >
+                      Reviews ({helper?.maidProfile.totalReviews})
                     </TabsTrigger>
                   </TabsList>
                   <TabsContent value="about" className="p-6 sm:p-8 space-y-6">
                     <div>
                       <h3 className="text-lg font-semibold mb-2">Bio</h3>
                       <p className="text-muted-foreground leading-relaxed">
-                        {helper.bio}
+                        {helper?.maidProfile.bio}
                       </p>
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold mb-2">
-                        Languages Spoken
-                      </h3>
-                      <p className="text-muted-foreground">
-                        {helper.languages.join(', ')}
-                      </p>
                     </div>
                   </TabsContent>
                   <TabsContent value="reviews" className="p-6 sm:p-8 space-y-6">
                     <div className="flex items-center gap-4 mb-8">
-                      <div className="text-4xl font-bold">{helper.rating}</div>
+                      <div className="text-4xl font-bold">{helper?.maidProfile.averageRating}</div>
                       <div>
                         <div className="flex text-accent mb-1">
-                          {[1, 2, 3, 4, 5].map((i) =>
-                          <Star key={i} className="h-4 w-4 fill-current" />
-                          )}
+                          {[1, 2, 3, 4, 5].map((i) => (
+                            <Star key={i} className="h-4 w-4 fill-current" />
+                          ))}
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Based on {helper.reviews} reviews
+                          Based on {helper?.maidProfile.totalReviews} reviews
                         </p>
                       </div>
                     </div>
                     <div className="space-y-6">
-                      {[1, 2, 3].map((i) =>
-                      <div
-                        key={i}
-                        className="border-b pb-6 last:border-0 last:pb-0">
-                        
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className="border-b pb-6 last:border-0 last:pb-0"
+                        >
                           <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center gap-2">
                               <Avatar className="h-8 w-8">
@@ -220,12 +224,12 @@ export default function ProfileDetailPage() {
                               </div>
                             </div>
                             <div className="flex text-accent">
-                              {[1, 2, 3, 4, 5].map((star) =>
-                            <Star
-                              key={star}
-                              className="h-3 w-3 fill-current" />
-
-                            )}
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                  key={star}
+                                  className="h-3 w-3 fill-current"
+                                />
+                              ))}
                             </div>
                           </div>
                           <p className="text-sm text-muted-foreground mt-2">
@@ -234,7 +238,7 @@ export default function ProfileDetailPage() {
                             dal makhani. Highly recommend her!
                           </p>
                         </div>
-                      )}
+                      ))}
                       <Button variant="outline" className="w-full">
                         Load More Reviews
                       </Button>
@@ -304,11 +308,11 @@ export default function ProfileDetailPage() {
                 </div>
                 <ul className="space-y-2 text-sm mb-6">
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-muted-foreground" />{' '}
+                    <CheckCircle2 className="h-4 w-4 text-muted-foreground" />{" "}
                     Minimum 2 hours
                   </li>
                   <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-muted-foreground" />{' '}
+                    <CheckCircle2 className="h-4 w-4 text-muted-foreground" />{" "}
                     Flexible scheduling
                   </li>
                 </ul>
@@ -331,6 +335,6 @@ export default function ProfileDetailPage() {
           </div>
         </div>
       </div>
-    </div>);
-
+    </div>
+  );
 }

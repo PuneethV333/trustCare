@@ -173,7 +173,7 @@ export default function HomePage() {
                   </div>
                   <h3 className="font-semibold text-lg">{helper.user.name}</h3>
                   <p className="text-muted-foreground text-sm mb-3">
-                    {helper.type} • {helper.experience} exp
+                    {helper.type} • {helper.experience} years exp
                   </p>
                   <div className="flex items-center gap-1 mb-4 text-sm">
                     <Star className="w-4 h-4 fill-accent text-accent" />

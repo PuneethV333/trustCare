@@ -15,3 +15,4 @@ export const getTop4Maids = async (req: Request, res: Response) => {
         res.status(500).json(getError(err))
     }
 }
+
