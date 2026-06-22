@@ -2,7 +2,7 @@ import admin from "firebase-admin"
 import { config } from "./data.config"
 
 
-if (!admin.app.length) {
+if (!admin.apps.length) {
     admin.initializeApp({
         credential: admin.credential.cert({
             projectId: config.firebaseProjectId,

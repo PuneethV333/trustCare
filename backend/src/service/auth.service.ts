@@ -44,7 +44,7 @@ export const signUpService = async (firebaseUid: string, payload: signUpType) =>
             email: payload.email,
             phoneNumber: payload.phoneNumber ?? "",
             firebaseUid,
-            profilePic: payload.profilePic ?? ""
+            profilePic: payload.profilePic ?? "https://ui-avatars.com/api/?name=User&background=random",
         }
     })
 
