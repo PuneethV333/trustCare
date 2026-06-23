@@ -18,17 +18,18 @@ enum roles {
 }
 
 model User {
-    id          String       @id @default(uuid())
-    name        String
-    email       String       @unique
-    role        roles        @default(USER)
-    maidProfile MaidProfile?
-    phoneNumber String
-    firebaseUid String       @unique
-    createdAt   DateTime     @default(now())
-    updatedAt   DateTime     @updatedAt
-    profilePic  String       @default("https://ui-avatars.com/api/?name=User&background=random")
-    reviews     Review[]
+    id            String         @id @default(uuid())
+    name          String
+    email         String         @unique
+    role          roles          @default(USER)
+    maidProfile   MaidProfile?
+    phoneNumber   String
+    firebaseUid   String         @unique
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
+    profilePic    String         @default("https://ui-avatars.com/api/?name=User&background=random")
+    reviews       Review[]
+    subscriptions Subscription[]
 }
 
 enum type {
@@ -38,42 +39,65 @@ enum type {
 }
 
 model MaidProfile {
-    id     String @id @default(uuid())
-    userId String @unique
-    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    type       type    @default(maid)
-    bio        String?
-    experience Int?
-
-    city String?
-    area String?
-
-    skill       String[]
-    costPerHour String
-
-    averageRating Float @default(0)
-    totalReviews  Int   @default(0)
-
-    isVerified        Boolean @default(false)
-    profileCompletion Float   @default(0)
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    reviews Review[]
+    id                String   @id @default(uuid())
+    userId            String   @unique
+    user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    type              type     @default(maid)
+    bio               String?
+    experience        Int?
+    city              String?
+    area              String?
+    skill             String[]
+    costPerHour       String
+    averageRating     Float    @default(0)
+    totalReviews      Int      @default(0)
+    isVerified        Boolean  @default(false)
+    profileCompletion Float    @default(0)
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
+    reviews           Review[]
+    plans             Plans[]
 }
 
 model Review {
-    id      String  @id @default(cuid())
-    rating  Int
-    comment String?
-
-    userId String
-    user   User   @relation(fields: [userId], references: [id])
-
+    id          String      @id @default(cuid())
+    rating      Int
+    comment     String?
+    userId      String
+    user        User        @relation(fields: [userId], references: [id])
     profileId   String
     maidProfile MaidProfile @relation(fields: [profileId], references: [id])
+    createdAt   DateTime    @default(now())
+}
 
-    createdAt DateTime @default(now())
+enum PlanTypes {
+    monthly
+    hourly
+    yearly
+}
+
+model Plans {
+    id                String    @id @default(cuid())
+    cost              Int
+    type              PlanTypes @default(monthly)
+    duration          Int
+    dailyWorkingHours Int
+    noOfSubs          Int
+
+    maidProfileId String?
+    maidProfile   MaidProfile?   @relation(fields: [maidProfileId], references: [id])
+    subscriptions Subscription[]
+}
+
+model Subscription {
+    id String @id @default(cuid())
+
+    userId String
+    planId String
+
+    user User  @relation(fields: [userId], references: [id])
+    plan Plans @relation(fields: [planId], references: [id])
+
+    startDate DateTime @default(now())
+    active    Boolean  @default(true)
 }

@@ -16,7 +16,8 @@ export const getUserService = async (id: string) => {
                                 }
                             }
                         }
-                    }
+                    },
+                    plans:true
                 }
             }
         },
