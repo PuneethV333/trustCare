@@ -34,34 +34,34 @@ import {
 import { useGetUser } from "../../hooks/useUser";
 export default function ProfileDetailPage() {
   const { id } = useParams();
-  
-  const {data:helper} = useGetUser(id ?? "");
+
+  const { data: helper } = useGetUser(id ?? "");
   if (!id) {
     return null;
   }
   // Mock data
-//   const helper = {
-//     name: "Sunita Devi",
-//     type: "Maid & Cook",
-//     location: "Andheri West, Mumbai",
-//     exp: "5 years",
-//     rating: 4.9,
-//     reviews: 124,
-//     img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop",
-//     bio: "I am a reliable and hardworking domestic helper with 5 years of experience in housekeeping and cooking. I specialize in North Indian and Maharashtrian cuisine. I am very particular about hygiene and maintain a clean environment. I am also comfortable around pets.",
-//     skills: [
-//       "Sweeping & Mopping",
-//       "Dusting",
-//       "Laundry",
-//       "North Indian Cooking",
-//       "Pet Friendly",
-//     ],
+  //   const helper = {
+  //     name: "Sunita Devi",
+  //     type: "Maid & Cook",
+  //     location: "Andheri West, Mumbai",
+  //     exp: "5 years",
+  //     rating: 4.9,
+  //     reviews: 124,
+  //     img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop",
+  //     bio: "I am a reliable and hardworking domestic helper with 5 years of experience in housekeeping and cooking. I specialize in North Indian and Maharashtrian cuisine. I am very particular about hygiene and maintain a clean environment. I am also comfortable around pets.",
+  //     skills: [
+  //       "Sweeping & Mopping",
+  //       "Dusting",
+  //       "Laundry",
+  //       "North Indian Cooking",
+  //       "Pet Friendly",
+  //     ],
 
-//     languages: ["Hindi", "Marathi", "Basic English"],
-//     verified: true,
-//     bgChecked: true,
-//     idVerified: true,
-//   };
+  //     languages: ["Hindi", "Marathi", "Basic English"],
+  //     verified: true,
+  //     bgChecked: true,
+  //     idVerified: true,
+  //   };
   return (
     <div className="bg-muted/10 min-h-screen pb-20">
       <div className="bg-card border-b">
@@ -99,15 +99,17 @@ export default function ProfileDetailPage() {
                     <h1 className="text-2xl font-bold">{helper?.name}</h1>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-muted-foreground mt-1 text-sm">
                       <span className="flex items-center">
-                        <MapPin className="h-4 w-4 mr-1" /> {helper?.maidProfile.area}
+                        <MapPin className="h-4 w-4 mr-1" />{" "}
+                        {helper?.maidProfile.area}
                       </span>
                       <span className="flex items-center">
-                        <Clock className="h-4 w-4 mr-1" /> {helper?.maidProfile.experience}{" "}
-                        Experience
+                        <Clock className="h-4 w-4 mr-1" />{" "}
+                        {helper?.maidProfile.experience} Experience
                       </span>
                       <span className="flex items-center text-foreground font-medium">
                         <Star className="h-4 w-4 mr-1 fill-accent text-accent" />{" "}
-                        {helper?.maidProfile.averageRating} ({helper?.maidProfile.totalReviews} reviews)
+                        {helper?.maidProfile.averageRating} (
+                        {helper?.maidProfile.totalReviews} reviews)
                       </span>
                     </div>
                   </div>
@@ -188,16 +190,17 @@ export default function ProfileDetailPage() {
                         {helper?.maidProfile.bio}
                       </p>
                     </div>
-                    <div>
-                    </div>
+                    <div></div>
                   </TabsContent>
                   <TabsContent value="reviews" className="p-6 sm:p-8 space-y-6">
                     <div className="flex items-center gap-4 mb-8">
-                      <div className="text-4xl font-bold">{helper?.maidProfile.averageRating}</div>
+                      <div className="text-4xl font-bold">
+                        {helper?.maidProfile.averageRating}
+                      </div>
                       <div>
                         <div className="flex text-accent mb-1">
-                          {[1, 2, 3, 4, 5].map((i) => (
-                            <Star key={i} className="h-4 w-4 fill-current" />
+                          {helper?.maidProfile.reviews.map((_, idx) => (
+                            <Star key={idx} className="h-4 w-4 fill-current" />
                           ))}
                         </div>
                         <p className="text-sm text-muted-foreground">
@@ -206,25 +209,32 @@ export default function ProfileDetailPage() {
                       </div>
                     </div>
                     <div className="space-y-6">
-                      {[1, 2, 3].map((i) => (
+                      {helper?.maidProfile.reviews.map((i, idx) => (
                         <div
-                          key={i}
+                          key={idx}
                           className="border-b pb-6 last:border-0 last:pb-0"
                         >
                           <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center gap-2">
                               <Avatar className="h-8 w-8">
-                                <AvatarFallback>R</AvatarFallback>
+                                <AvatarFallback>
+                                  {i.user.name[0]}
+                                </AvatarFallback>
                               </Avatar>
                               <div>
-                                <p className="text-sm font-medium">Rahul M.</p>
+                                <p className="text-sm font-medium">
+                                  {i.user.name}
+                                </p>
                                 <p className="text-xs text-muted-foreground">
-                                  2 months ago
+                                  {i.createdAt.toLocaleDateString()}
                                 </p>
                               </div>
                             </div>
                             <div className="flex text-accent">
-                              {[1, 2, 3, 4, 5].map((star) => (
+                              {Array.from(
+                                new Array(i.rating),
+                                (_, l) => l + 1,
+                              ).map((star) => (
                                 <Star
                                   key={star}
                                   className="h-3 w-3 fill-current"
@@ -233,15 +243,10 @@ export default function ProfileDetailPage() {
                             </div>
                           </div>
                           <p className="text-sm text-muted-foreground mt-2">
-                            Sunita is very punctual and does her work
-                            thoroughly. Her cooking is excellent, especially the
-                            dal makhani. Highly recommend her!
+                            {i.comment}
                           </p>
                         </div>
                       ))}
-                      <Button variant="outline" className="w-full">
-                        Load More Reviews
-                      </Button>
                     </div>
                   </TabsContent>
                 </Tabs>

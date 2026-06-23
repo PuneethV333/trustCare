@@ -101,27 +101,38 @@ export const IGetUser = z.object({
     firebaseUid: z.string(),
     phoneNumber: z.string().optional(),
     profilePic: z.url().optional(),
-    maidProfile:z.object({
+    maidProfile: z.object({
         id: z.string(),
-    userId: z.string(),
+        userId: z.string(),
 
-    type: z.enum(["maid", "nanny", "babysitter"]),
+        type: z.enum(["maid", "nanny", "babysitter"]),
 
-    bio: z.string().nullable().optional(),
-    experience: z.number().nullable().optional(),
+        bio: z.string().nullable().optional(),
+        experience: z.number().nullable().optional(),
 
-    city: z.string().nullable().optional(),
-    area: z.string().nullable().optional(),
+        city: z.string().nullable().optional(),
+        area: z.string().nullable().optional(),
 
-    skill: z.array(z.string()),
+        skill: z.array(z.string()),
 
-    costPerHour: z.string(),
+        costPerHour: z.string(),
 
-    averageRating: z.number(),
-    totalReviews: z.number(),
+        averageRating: z.number(),
+        totalReviews: z.number(),
 
-    isVerified: z.boolean(),
-    profileCompletion: z.number(),
+        reviews: z.array(z.object({
+            comment: z.string(),
+            createdAt: z.coerce.date(),
+            rating: z.number(),
+            user: z.object({
+                id: z.string(),
+                profilePic: z.url(),
+                name: z.string()
+            })
+        })),
+
+        isVerified: z.boolean(),
+        profileCompletion: z.number(),
     })
 })
 

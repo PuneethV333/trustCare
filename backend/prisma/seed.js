@@ -2,30 +2,63 @@
 import { prisma } from "../src/config/prisma.ts";
 
 const INDIAN_NAMES = [
-  "Priya Sharma", "Anjali Verma", "Sunita Devi", "Rekha Kumari",
-  "Meena Patel", "Kavitha Nair", "Lakshmi Reddy", "Pushpa Yadav",
-  "Savitri Joshi", "Radha Mishra",
+  "Priya Sharma",
+  "Anjali Verma",
+  "Sunita Devi",
+  "Rekha Kumari",
+  "Meena Patel",
+  "Kavitha Nair",
+  "Lakshmi Reddy",
+  "Pushpa Yadav",
+  "Savitri Joshi",
+  "Radha Mishra",
 ];
 
 const USER_NAMES = [
-  "Arjun Mehta", "Sneha Iyer", "Rohit Gupta", "Divya Nair", "Vikram Singh",
+  "Arjun Mehta",
+  "Sneha Iyer",
+  "Rohit Gupta",
+  "Divya Nair",
+  "Vikram Singh",
 ];
 
 const CITIES = ["Mumbai", "Bangalore", "Delhi", "Hyderabad", "Chennai", "Pune"];
 
 const AREAS = {
   Mumbai: ["Andheri", "Bandra", "Powai", "Juhu", "Malad"],
-  Bangalore: ["Koramangala", "Indiranagar", "HSR Layout", "Whitefield", "BTM Layout"],
+  Bangalore: [
+    "Koramangala",
+    "Indiranagar",
+    "HSR Layout",
+    "Whitefield",
+    "BTM Layout",
+  ],
   Delhi: ["Lajpat Nagar", "Dwarka", "Rohini", "Saket", "Vasant Kunj"],
-  Hyderabad: ["Banjara Hills", "Madhapur", "Gachibowli", "Kondapur", "Begumpet"],
+  Hyderabad: [
+    "Banjara Hills",
+    "Madhapur",
+    "Gachibowli",
+    "Kondapur",
+    "Begumpet",
+  ],
   Chennai: ["Anna Nagar", "T Nagar", "Adyar", "Velachery", "OMR"],
   Pune: ["Koregaon Park", "Baner", "Hinjewadi", "Kothrud", "Aundh"],
 };
 
 const SKILLS_POOL = [
-  "Cooking", "Cleaning", "Laundry", "Childcare", "Elderly care",
-  "Cooking South Indian", "Cooking North Indian", "Dishwashing",
-  "Mopping", "Dusting", "Grocery shopping", "Pet care", "Ironing",
+  "Cooking",
+  "Cleaning",
+  "Laundry",
+  "Childcare",
+  "Elderly care",
+  "Cooking South Indian",
+  "Cooking North Indian",
+  "Dishwashing",
+  "Mopping",
+  "Dusting",
+  "Grocery shopping",
+  "Pet care",
+  "Ironing",
 ];
 
 const TYPES = ["maid", "nanny", "babysitter"];
@@ -44,7 +77,8 @@ const COMMENTS = [
 ];
 
 const randomFrom = (arr) => arr[Math.floor(Math.random() * arr.length)];
-const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const randomInt = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1)) + min;
 const randomSubset = (arr, min, max) => {
   const count = randomInt(min, max);
   return [...arr].sort(() => 0.5 - Math.random()).slice(0, count);
@@ -96,9 +130,16 @@ async function main() {
       },
     });
 
+    const users = await prisma.user.findMany({
+      where: {
+        role: "USER",
+      },
+    });
+
     const reviewData = Array.from({ length: reviewCount }, () => ({
       rating: randomInt(3, 5),
       comment: randomFrom(COMMENTS),
+      userId: randomFrom(users).id,
     }));
 
     const avgRating =
@@ -122,7 +163,9 @@ async function main() {
       },
     });
 
-    console.log(`🧹 Created ${type}: ${name} (${area}, ${city}) — ⭐ ${avgRating.toFixed(1)}`);
+    console.log(
+      `🧹 Created ${type}: ${name} (${area}, ${city}) — ⭐ ${avgRating.toFixed(1)}`,
+    );
   }
 
   console.log("\n✅ Seeding complete!");

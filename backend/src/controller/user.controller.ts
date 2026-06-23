@@ -6,10 +6,8 @@ export const getUser = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const user = await getUserService(Array.isArray(id) ? id[0] : id);
-        console.log(id);
         
         return res.status(200).json({
-        
             data: user
         });
         

@@ -28,6 +28,7 @@ model User {
     createdAt   DateTime     @default(now())
     updatedAt   DateTime     @updatedAt
     profilePic  String       @default("https://ui-avatars.com/api/?name=User&background=random")
+    reviews     Review[]
 }
 
 enum type {
@@ -67,6 +68,9 @@ model Review {
     id      String  @id @default(cuid())
     rating  Int
     comment String?
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
 
     profileId   String
     maidProfile MaidProfile @relation(fields: [profileId], references: [id])

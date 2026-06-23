@@ -3,5 +3,6 @@ import { getUser, IGetUser } from "../types/user.types";
 
 export const getUserApi = async (id: string): Promise<getUser> => {
     const res = await api.get(`/api/user/get/${id}`)
+    console.log(res.data.data);
     return IGetUser.parse(res.data.data)
 }
