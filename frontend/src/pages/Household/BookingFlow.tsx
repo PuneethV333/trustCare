@@ -1,34 +1,37 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   CheckCircle2,
   ChevronLeft,
   Calendar as CalendarIcon,
   Clock,
   MapPin,
-  ShieldCheck } from
-'lucide-react';
-import { Button } from '../../components/ui/Button';
+  ShieldCheck,
+} from "lucide-react";
+import { Button } from "../../components/ui/Button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-  CardFooter } from
-'../../components/ui/Card';
-import { Input } from '../../components/ui/Input';
-import { Label } from '../../components/ui/Label';
-import { RadioGroup, RadioGroupItem } from '../../components/ui/RadioGroup';
-import { Separator } from '../../components/ui/Separator';
+  CardFooter,
+} from "../../components/ui/Card";
+import { Input } from "../../components/ui/Input";
+import { Label } from "../../components/ui/Label";
+import { RadioGroup, RadioGroupItem } from "../../components/ui/RadioGroup";
+import { Separator } from "../../components/ui/Separator";
+import { useGetUser } from "../../hooks/useUser";
+import { returnTypeOfCost } from "../../utils/getTypeOfCost";
 export default function BookingFlowPage() {
+  const { id } = useParams();
+  const { data: helper } = useGetUser(id ?? "");
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const handleNext = () => {
-    if (step < 3) setStep(step + 1);else
-    {
-      // Simulate booking success
-      navigate('/bookings');
+    if (step < 3) setStep(step + 1);
+    else {
+      navigate("/bookings");
     }
   };
   return (
@@ -36,8 +39,8 @@ export default function BookingFlowPage() {
       <div className="mb-8">
         <Link
           to="/helper/1"
-          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
-          
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+        >
           <ChevronLeft className="h-4 w-4 mr-1" /> Back to Profile
         </Link>
         <h1 className="text-3xl font-bold">Book Sunita Devi</h1>
@@ -49,32 +52,32 @@ export default function BookingFlowPage() {
         <div
           className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary -z-10 rounded-full transition-all duration-300"
           style={{
-            width: `${(step - 1) / 2 * 100}%`
-          }}>
-        </div>
+            width: `${((step - 1) / 2) * 100}%`,
+          }}
+        ></div>
 
-        {[1, 2, 3].map((i) =>
-        <div
-          key={i}
-          className={`flex flex-col items-center gap-2 bg-background px-2 ${step >= i ? 'text-primary' : 'text-muted-foreground'}`}>
-          
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className={`flex flex-col items-center gap-2 bg-background px-2 ${step >= i ? "text-primary" : "text-muted-foreground"}`}
+          >
             <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${step >= i ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
-            
+              className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${step >= i ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}
+            >
               {step > i ? <CheckCircle2 className="h-5 w-5" /> : i}
             </div>
             <span className="text-xs font-medium hidden sm:block">
-              {i === 1 ? 'Schedule' : i === 2 ? 'Details' : 'Confirm'}
+              {i === 1 ? "Schedule" : i === 2 ? "Details" : "Confirm"}
             </span>
           </div>
-        )}
+        ))}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Main Form Area */}
         <div className="md:col-span-2">
-          {step === 1 &&
-          <Card>
+          {step === 1 && (
+            <Card>
               <CardHeader>
                 <CardTitle>Schedule & Plan</CardTitle>
                 <CardDescription>
@@ -85,43 +88,31 @@ export default function BookingFlowPage() {
                 <div className="space-y-3">
                   <Label>Selected Plan</Label>
                   <RadioGroup
-                  defaultValue="monthly"
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  
-                    <div>
-                      <RadioGroupItem
-                      value="monthly"
-                      id="monthly"
-                      className="peer sr-only" />
-                    
-                      <Label
-                      htmlFor="monthly"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">
-                      
-                        <span className="font-semibold text-lg mb-1">
-                          Monthly
-                        </span>
-                        <span className="text-primary font-bold">
-                          ₹12,000/mo
-                        </span>
-                      </Label>
-                    </div>
-                    <div>
-                      <RadioGroupItem
-                      value="hourly"
-                      id="hourly"
-                      className="peer sr-only" />
-                    
-                      <Label
-                      htmlFor="hourly"
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">
-                      
-                        <span className="font-semibold text-lg mb-1">
-                          Hourly
-                        </span>
-                        <span className="text-primary font-bold">₹200/hr</span>
-                      </Label>
-                    </div>
+                    defaultValue="monthly"
+                    className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                  >
+                    {helper?.maidProfile.plans?.map((x, idx) => (
+                      <div key={idx}>
+                        <RadioGroupItem
+                          value={x.type}
+                          id={x.type}
+                          className="peer sr-only"
+                        />
+
+                        <Label
+                          htmlFor={x.type}
+                          className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                        >
+                          <span className="font-semibold text-lg mb-1">
+                            {x.type}
+                          </span>
+                          <span className="text-primary font-bold">
+                            ₹{x.cost}
+                            {returnTypeOfCost(x.type)}
+                          </span>
+                        </Label>
+                      </div>
+                    ))}
                   </RadioGroup>
                 </div>
 
@@ -138,11 +129,11 @@ export default function BookingFlowPage() {
                     <div className="relative">
                       <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
-                      id="start-time"
-                      type="time"
-                      className="pl-9"
-                      defaultValue="08:00" />
-                    
+                        id="start-time"
+                        type="time"
+                        className="pl-9"
+                        defaultValue="08:00"
+                      />
                     </div>
                   </div>
                 </div>
@@ -153,10 +144,10 @@ export default function BookingFlowPage() {
                 </Button>
               </CardFooter>
             </Card>
-          }
+          )}
 
-          {step === 2 &&
-          <Card>
+          {step === 2 && (
+            <Card>
               <CardHeader>
                 <CardTitle>Service Details</CardTitle>
                 <CardDescription>Where should the helper go?</CardDescription>
@@ -165,9 +156,9 @@ export default function BookingFlowPage() {
                 <div className="space-y-2">
                   <Label htmlFor="address">Full Address</Label>
                   <Input
-                  id="address"
-                  placeholder="Flat/House No, Building, Street" />
-                
+                    id="address"
+                    placeholder="Flat/House No, Building, Street"
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -182,10 +173,10 @@ export default function BookingFlowPage() {
                 <div className="space-y-2 pt-4">
                   <Label htmlFor="notes">Special Instructions (Optional)</Label>
                   <textarea
-                  id="notes"
-                  className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="E.g., We have a dog, please ring the bell once." />
-                
+                    id="notes"
+                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    placeholder="E.g., We have a dog, please ring the bell once."
+                  />
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
@@ -195,10 +186,10 @@ export default function BookingFlowPage() {
                 <Button onClick={handleNext}>Review Booking</Button>
               </CardFooter>
             </Card>
-          }
+          )}
 
-          {step === 3 &&
-          <Card>
+          {step === 3 && (
+            <Card>
               <CardHeader>
                 <CardTitle>Review & Confirm</CardTitle>
                 <CardDescription>
@@ -254,7 +245,7 @@ export default function BookingFlowPage() {
                 </Button>
               </CardFooter>
             </Card>
-          }
+          )}
         </div>
 
         {/* Order Summary Sidebar */}
@@ -266,16 +257,20 @@ export default function BookingFlowPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center gap-3 mb-4">
                 <img
-                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=100&auto=format&fit=crop"
+                  src={helper?.profilePic}
                   alt="Helper"
-                  className="w-12 h-12 rounded-full object-cover" />
-                
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+
                 <div>
-                  <p className="font-medium">Sunita Devi</p>
-                  <p className="text-xs text-muted-foreground">Maid & Cook</p>
+                  <p className="font-medium">{helper?.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {helper?.maidProfile.skill.join(" & ")}
+                  </p>
                 </div>
               </div>
               <Separator />
+              //todo:dymaicity will be handled later
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Monthly Plan</span>
@@ -299,6 +294,6 @@ export default function BookingFlowPage() {
           </Card>
         </div>
       </div>
-    </div>);
-
+    </div>
+  );
 }

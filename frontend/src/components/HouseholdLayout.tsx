@@ -229,13 +229,8 @@ export function HouseholdLayout({ children }: { children: React.ReactNode }) {
             <h4 className="font-semibold mb-4">For Helpers</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to="/helper/register" className="hover:text-primary">
+                <Link to="/helper/join" className="hover:text-primary">
                   Join as a Helper
-                </Link>
-              </li>
-              <li>
-                <Link to="/helper" className="hover:text-primary">
-                  Helper Login
                 </Link>
               </li>
             </ul>

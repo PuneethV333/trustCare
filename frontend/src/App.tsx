@@ -18,6 +18,7 @@ import { DashboardLayout } from "./components/DashboardLayout";
 import { Auth } from "./config/firebase.config";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Spinner from "./components/Spinner";
+import JoinAsHelper from "./pages/Helper/JoinAsHelper";
 
 export function App() {
   const [, loading] = useAuthState(Auth);
@@ -116,6 +117,15 @@ export function App() {
             <DashboardLayout role="helper">
               <HelperJobHistoryPage />
             </DashboardLayout>
+          }
+        />
+
+        <Route
+          path="/helper/join"
+          element={
+            <HouseholdLayout>
+              <JoinAsHelper />
+            </HouseholdLayout>
           }
         />
 

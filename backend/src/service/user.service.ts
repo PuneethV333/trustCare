@@ -17,9 +17,10 @@ export const getUserService = async (id: string) => {
                             }
                         }
                     },
-                    plans:true
+                    plans: true
                 }
             }
         },
     });
 };
+

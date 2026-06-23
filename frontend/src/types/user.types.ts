@@ -11,6 +11,8 @@ export const IUser = z.object({
     profilePic: z.url().optional(),
 });
 
+export type User = z.infer<typeof IUser>
+
 export const IUserPreview = z.object({
     id: z.string(),
     name: z.string(),
@@ -129,11 +131,38 @@ export const IGetUser = z.object({
                 profilePic: z.url(),
                 name: z.string()
             })
-        })),
+        })).optional(),
 
         isVerified: z.boolean(),
         profileCompletion: z.number(),
-    })
+        plans: z.array(z.object({
+            cost: z.number(),
+            dailyWorkingHours: z.number(),
+            duration: z.number(),
+            noOfSubs: z.number(),
+            type: z.enum(["monthly", "hourly", "yearly"])
+        })).optional()
+    }),
 })
 
 export type getUser = z.infer<typeof IGetUser>
+
+export const plan = z.object({
+    cost: z.number(),
+    type: z.enum(["monthly", "yearly", "hourly"]),
+    dailyWorkingHours: z.number(),
+    duration: z.number(),
+})
+
+export const createMaidSchema = z.object({
+    type: z.enum(["nanny", "maid", "babysitter"]),
+    bio: z.string().optional(),
+    experience: z.number(),
+    city: z.string().optional(),
+    area: z.string().optional(),
+    costPerHour: z.string(),
+    plans: z.array(plan),
+    skill: z.array(z.string())
+})
+
+export type createMaid = z.infer<typeof createMaidSchema>

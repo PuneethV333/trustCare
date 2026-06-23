@@ -82,7 +82,7 @@ model Plans {
     type              PlanTypes @default(monthly)
     duration          Int
     dailyWorkingHours Int
-    noOfSubs          Int
+    noOfSubs          Int @default(0)
 
     maidProfileId String?
     maidProfile   MaidProfile?   @relation(fields: [maidProfileId], references: [id])
