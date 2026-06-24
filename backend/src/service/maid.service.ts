@@ -20,16 +20,41 @@ export const getTop4MaidsService = async () => {
             { averageRating: "desc" },
             { totalReviews: "desc" },
         ],
-        take:4,
+        take: 4,
+        include: {
+            user: true
+        }
+    })
+
+    await setValKey(cacheKey, JSON.stringify(data))
+
+    return {
+        data,
+        source: "db"
+    }
+}
+
+export const getMaidsService = async () => {
+    const cacheKey = `maids:all`
+    const cached = await getVal(cacheKey)
+    
+    if (cached){
+        return {
+            data:JSON.parse(cached),
+            source:"redis"
+        }
+    }
+    
+    
+    const maids = await prisma.maidProfile.findMany({
         include:{
-            user:true
+            user:true,
         }
     })
     
-    await setValKey(cacheKey,JSON.stringify(data))
-    
+    await setValKey(cacheKey,JSON.stringify(maids))
     return {
-        data,
+        data:maids,
         source:"db"
     }
 }

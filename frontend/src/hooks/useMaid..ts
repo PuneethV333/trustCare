@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getTopMaidsApi } from "../api/maid.api";
+import { getMaidsApi, getTopMaidsApi } from "../api/maid.api";
 
 export const useGetTopMaids = () => 
     useQuery({
@@ -7,4 +7,11 @@ export const useGetTopMaids = () =>
         queryFn:getTopMaidsApi,
         refetchOnWindowFocus:false,
         staleTime:3000
+    })
+    
+    
+export const useGetMaids = () => 
+    useQuery({
+        queryKey:["maids"],
+        queryFn:getMaidsApi,
     })
