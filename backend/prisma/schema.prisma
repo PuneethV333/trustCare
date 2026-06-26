@@ -30,6 +30,7 @@ model User {
     profilePic    String         @default("https://ui-avatars.com/api/?name=User&background=random")
     reviews       Review[]
     subscriptions Subscription[]
+    requests      Request[]
 }
 
 enum type {
@@ -82,11 +83,11 @@ model Plans {
     type              PlanTypes @default(monthly)
     duration          Int
     dailyWorkingHours Int
-    noOfSubs          Int @default(0)
-
+    noOfSubs          Int       @default(0)
     maidProfileId String?
     maidProfile   MaidProfile?   @relation(fields: [maidProfileId], references: [id])
     subscriptions Subscription[]
+    requests      Request[]
 }
 
 model Subscription {
@@ -100,4 +101,20 @@ model Subscription {
 
     startDate DateTime @default(now())
     active    Boolean  @default(true)
+}
+
+enum Status {
+    Accepted
+    Rejected
+    Pending
+}
+
+model Request {
+    id     String @id @default(cuid())
+    userId String
+    planId String
+    user User  @relation(fields: [userId], references: [id])
+    plan Plans @relation(fields: [planId], references: [id])
+    status Status @default(Pending)
+    startDate DateTime @default(now())
 }

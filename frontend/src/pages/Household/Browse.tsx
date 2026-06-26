@@ -360,7 +360,7 @@ export default function BrowsePage() {
                       {helper.costPerHour}/hr
                     </p>
                   </div>
-                  <Link to={`/helper/${helper.id}`}>
+                  <Link to={`/helper/${helper.userId}`}>
                     <Button size="sm">View Profile</Button>
                   </Link>
                 </div>

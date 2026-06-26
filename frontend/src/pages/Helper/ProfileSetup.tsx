@@ -25,7 +25,7 @@ export default function HelperProfileSetupPage() {
         <div>
           <h1 className="text-3xl font-bold">Profile & Documents</h1>
           <p className="text-muted-foreground">
-            Manage your public profile and verification documents.
+            Manage your public profile
           </p>
         </div>
         <Button>Save Changes</Button>
@@ -65,6 +65,7 @@ export default function HelperProfileSetupPage() {
               <div className="space-y-2">
                 <Label htmlFor="bio">About Me (Bio)</Label>
                 <textarea
+                title='bio'
                   id="bio"
                   className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   defaultValue="I am a reliable and hardworking domestic helper with 5 years of experience in housekeeping and cooking. I specialize in North Indian and Maharashtrian cuisine." />
@@ -86,11 +87,8 @@ export default function HelperProfileSetupPage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
                 'Maid / Housekeeping',
-                'Cooking',
                 'Babysitting',
-                'Nanny',
-                'Elder Care',
-                'Pet Care'].
+                'Nanny'].
                 map((service) =>
                 <div key={service} className="flex items-center space-x-2">
                     <Checkbox

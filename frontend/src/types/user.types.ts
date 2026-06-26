@@ -136,13 +136,14 @@ export const IGetUser = z.object({
         isVerified: z.boolean(),
         profileCompletion: z.number(),
         plans: z.array(z.object({
+            id:z.string(),
             cost: z.number(),
             dailyWorkingHours: z.number(),
             duration: z.number(),
             noOfSubs: z.number(),
             type: z.enum(["monthly", "hourly", "yearly"])
         })).optional()
-    }),
+    }).optional(),
 })
 
 export type getUser = z.infer<typeof IGetUser>
@@ -166,3 +167,20 @@ export const createMaidSchema = z.object({
 })
 
 export type createMaid = z.infer<typeof createMaidSchema>
+
+export const addRequestSchema = z.object({
+    startData: z.coerce.date(),
+    planId: z.string()
+})
+
+export type addRequest = z.infer<typeof addRequestSchema>
+
+export const addedRequestSchema = z.object({
+    id: z.string(),
+    planId: z.string(),
+    status: z.enum(["Accepted", "Rejected", "Pending"]),
+    startDate: z.coerce.date(),
+    userId: z.string(),
+})
+
+export type addedRequest = z.infer<typeof addedRequestSchema>

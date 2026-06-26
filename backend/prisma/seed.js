@@ -28,6 +28,7 @@ const SKILLS_POOL = [
   "Mopping", "Dusting", "Grocery shopping", "Pet care", "Ironing",
 ];
 
+// Must match schema enum `type` (lowercase)
 const TYPES = ["maid", "nanny", "babysitter"];
 
 const COMMENTS = [
@@ -38,40 +39,43 @@ const COMMENTS = [
   "Would highly recommend to anyone.", "Outstanding service, very satisfied.",
 ];
 
-// Plan templates per plan type
+// Must match schema enum `PlanTypes` (lowercase)
 const PLAN_TEMPLATES = {
-  hourly: { duration: 4, dailyWorkingHours: 4 },
-  monthly: { duration: 30, dailyWorkingHours: 4 },
-  yearly: { duration: 365, dailyWorkingHours: 4 },
+  hourly:   { duration: 4,   dailyWorkingHours: 4 },
+  monthly:  { duration: 30,  dailyWorkingHours: 4 },
+  yearly:   { duration: 365, dailyWorkingHours: 4 },
 };
 
-const randomFrom = (arr) => arr[Math.floor(Math.random() * arr.length)];
-const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-const randomSubset = (arr, min, max) => {
+// Must match schema enum `Status`
+const REQUEST_STATUSES = ["Accepted", "Rejected", "Pending"];
+
+const randomFrom    = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const randomInt     = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const randomSubset  = (arr, min, max) => {
   const count = randomInt(min, max);
   return [...arr].sort(() => 0.5 - Math.random()).slice(0, count);
 };
 const avatarUrl = (name) =>
   `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&size=128`;
 
-/** Build 2–3 plan records for a given helper's hourly rate (as an int, e.g. 150) */
+/** Build 2–3 plan records for a given helper's hourly base rate */
 function buildPlans(baseRate) {
   const planTypes = randomSubset(["hourly", "monthly", "yearly"], 2, 3);
   return planTypes.map((planType) => {
     const tmpl = PLAN_TEMPLATES[planType];
     const cost =
       planType === "hourly"
-        ? baseRate                            // ₹150 / session
+        ? baseRate
         : planType === "monthly"
-        ? baseRate * tmpl.dailyWorkingHours * tmpl.duration   // daily hrs × days
-        : baseRate * tmpl.dailyWorkingHours * 300;            // yearly — slight discount vs 365
+        ? baseRate * tmpl.dailyWorkingHours * tmpl.duration
+        : baseRate * tmpl.dailyWorkingHours * 300; // yearly — slight discount vs 365
 
     return {
-      type: planType,
-      cost: Math.round(cost),
-      duration: tmpl.duration,
+      type:              planType,          // matches PlanTypes enum
+      cost:              Math.round(cost),
+      duration:          tmpl.duration,
       dailyWorkingHours: tmpl.dailyWorkingHours,
-      noOfSubs: 0, // will increment as subscriptions are created
+      noOfSubs:          0,                 // incremented later as subscriptions are created
     };
   });
 }
@@ -79,7 +83,8 @@ function buildPlans(baseRate) {
 async function main() {
   console.log("🌱 Seeding database...");
 
-  // Clear in dependency order
+  // Clear in dependency order (children before parents)
+  await prisma.request.deleteMany();
   await prisma.subscription.deleteMany();
   await prisma.review.deleteMany();
   await prisma.plans.deleteMany();
@@ -88,18 +93,18 @@ async function main() {
 
   console.log("🗑️  Cleared existing data\n");
 
-  // ── Users ──────────────────────────────────────────────────────────────────
+  // ── Regular Users ──────────────────────────────────────────────────────────
   const createdUsers = [];
   for (let i = 0; i < USER_NAMES.length; i++) {
     const name = USER_NAMES[i];
     const user = await prisma.user.create({
       data: {
         name,
-        email: `user${i + 1}@trustcare.in`,
+        email:       `user${i + 1}@trustcare.in`,
         phoneNumber: `9${randomInt(100000000, 999999999)}`,
         firebaseUid: `fake-user-uid-${i + 1}`,
-        profilePic: avatarUrl(name),
-        role: "USER",
+        profilePic:  avatarUrl(name),
+        role:        "USER",               // matches roles enum
       },
     });
     createdUsers.push(user);
@@ -107,33 +112,36 @@ async function main() {
   }
 
   // ── Helpers + Plans + Reviews ──────────────────────────────────────────────
-  const allPlans = []; // collect for subscription step
+  const allPlans = []; // collected for the subscription + request steps
 
   for (let i = 0; i < INDIAN_NAMES.length; i++) {
-    const name = INDIAN_NAMES[i];
-    const city = randomFrom(CITIES);
-    const area = randomFrom(AREAS[city]);
-    const helperType = randomFrom(TYPES);
-    const skills = randomSubset(SKILLS_POOL, 3, 6);
-    const experience = randomInt(1, 12);
+    const name        = INDIAN_NAMES[i];
+    const city        = randomFrom(CITIES);
+    const area        = randomFrom(AREAS[city]);
+    const helperType  = randomFrom(TYPES);   // matches type enum
+    const skills      = randomSubset(SKILLS_POOL, 3, 6);
+    const experience  = randomInt(1, 12);
     const reviewCount = randomInt(2, 5);
-    const baseRate = randomInt(80, 250);
+    const baseRate    = randomInt(80, 250);
 
+    // Each helper is a User with role HELPER
     const helperUser = await prisma.user.create({
       data: {
         name,
-        email: `helper${i + 1}@trustcare.in`,
+        email:       `helper${i + 1}@trustcare.in`,
         phoneNumber: `8${randomInt(100000000, 999999999)}`,
         firebaseUid: `fake-helper-uid-${i + 1}`,
-        profilePic: avatarUrl(name),
-        role: "HELPER",
+        profilePic:  avatarUrl(name),
+        role:        "HELPER",             // matches roles enum
       },
     });
 
+    // Review rows — `profileId` is set automatically via nested create
+    // `userId` must reference a regular user (reviewer), not the helper themselves
     const reviewData = Array.from({ length: reviewCount }, () => ({
-      rating: randomInt(3, 5),
+      rating:  randomInt(3, 5),
       comment: randomFrom(COMMENTS),
-      userId: randomFrom(createdUsers).id,
+      userId:  randomFrom(createdUsers).id, // FK → User.id (reviewer)
     }));
 
     const avgRating =
@@ -143,20 +151,20 @@ async function main() {
 
     const profile = await prisma.maidProfile.create({
       data: {
-        userId: helperUser.id,
-        type: helperType,
-        bio: `Experienced ${helperType} with ${experience} years of work across ${city}. Skilled in ${skills.slice(0, 2).join(" and ")}.`,
+        userId:            helperUser.id,  // FK → User.id (the helper)
+        type:              helperType,     // matches type enum
+        bio:               `Experienced ${helperType} with ${experience} years of work across ${city}. Skilled in ${skills.slice(0, 2).join(" and ")}.`,
         experience,
         city,
         area,
-        skill: skills,
-        costPerHour: `${baseRate}`,
-        averageRating: parseFloat(avgRating.toFixed(1)),
-        totalReviews: reviewCount,
-        isVerified: Math.random() > 0.3,
+        skill:             skills,
+        costPerHour:       `${baseRate}`,
+        averageRating:     parseFloat(avgRating.toFixed(1)),
+        totalReviews:      reviewCount,
+        isVerified:        Math.random() > 0.3,
         profileCompletion: randomInt(70, 100),
-        reviews: { create: reviewData },
-        plans: { create: planInputs },       // ← plans nested here
+        reviews: { create: reviewData },   // profileId auto-wired by Prisma
+        plans:   { create: planInputs },
       },
       include: { plans: true },
     });
@@ -172,29 +180,48 @@ async function main() {
   console.log("\n📋 Creating subscriptions...");
 
   for (const user of createdUsers) {
-    // Each user subscribes to 1–3 random plans
     const chosenPlans = randomSubset(allPlans, 1, 3);
 
     for (const plan of chosenPlans) {
       await prisma.subscription.create({
         data: {
-          userId: user.id,
-          planId: plan.id,
-          active: Math.random() > 0.2, // 80% active
+          userId:    user.id,
+          planId:    plan.id,
+          active:    Math.random() > 0.2,  // 80 % active
           startDate: new Date(
-            Date.now() - randomInt(0, 60) * 24 * 60 * 60 * 1000 // started 0–60 days ago
+            Date.now() - randomInt(0, 60) * 24 * 60 * 60 * 1000 // 0–60 days ago
           ),
         },
       });
 
-      // Keep noOfSubs in sync
       await prisma.plans.update({
         where: { id: plan.id },
-        data: { noOfSubs: { increment: 1 } },
+        data:  { noOfSubs: { increment: 1 } },
       });
     }
 
     console.log(`🔗 ${user.name} subscribed to ${chosenPlans.length} plan(s)`);
+  }
+
+  // ── Requests ───────────────────────────────────────────────────────────────
+  // Request model: userId, planId, status (Accepted | Rejected | Pending)
+  console.log("\n📨 Creating requests...");
+
+  for (const user of createdUsers) {
+    // Each user makes 1–2 requests to random plans
+    const requestedPlans = randomSubset(allPlans, 1, 2);
+
+    for (const plan of requestedPlans) {
+      await prisma.request.create({
+        data: {
+          userId: user.id,
+          planId: plan.id,
+          status: randomFrom(REQUEST_STATUSES), 
+        },
+      });
+    }
+
+    console.log(`📩 ${user.name} made ${requestedPlans.length} request(s)`);
   }
 
   console.log("\n✅ Seeding complete!");

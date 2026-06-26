@@ -1,7 +1,8 @@
 import { prisma } from "../config/prisma";
+import { addRequest } from "../types/maid.types";
 
 export const getUserService = async (id: string) => {
-    return await prisma.user.findUnique({
+    const user =  await prisma.user.findUnique({
         where: { id },
         include: {
             maidProfile: {
@@ -22,5 +23,34 @@ export const getUserService = async (id: string) => {
             }
         },
     });
+    return user
+    
 };
 
+export const addRequestService = async (firebaseUid: string, maidId: string, payload: addRequest) => {
+    const user = await prisma.user.findUnique({
+        where: { firebaseUid }
+    })
+
+    if (!user) {
+        throw new Error("User not found")
+    }
+
+    const maid = await prisma.user.findUnique({
+        where: { id: maidId }
+    })
+
+    if (!maid || maid.role !== 'HELPER') {
+        throw new Error("maid not found")
+    }
+
+    const res = await prisma.request.create({
+        data: {
+            planId: payload.planId,
+            startDate: payload.startData,
+            userId: user.id
+        }
+    })
+
+    return res
+}
