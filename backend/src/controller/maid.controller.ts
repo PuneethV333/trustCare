@@ -55,10 +55,10 @@ export const acceptRequest = async (req: Request, res: Response) => {
         }
 
         const result = await acceptRequestService(firebaseUid, Array.isArray(requestId) ? requestId[0] : requestId)
-        
-        
+
+
         return res.status(200).json({
-            data:result
+            data: result
         })
     } catch (err) {
         return res.status(500).json(getError(err))
@@ -77,12 +77,13 @@ export const rejectRequest = async (req: Request, res: Response) => {
         }
 
         const result = await rejectRequestService(firebaseUid, Array.isArray(requestId) ? requestId[0] : requestId)
-        
-        
+
+
         return res.status(200).json({
-            data:result
+            data: result
         })
     } catch (err) {
         return res.status(500).json(getError(err))
     }
 }
+
