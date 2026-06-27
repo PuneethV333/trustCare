@@ -24,10 +24,10 @@ import { Input } from "../../components/ui/Input";
 import { Label } from "../../components/ui/Label";
 import { RadioGroup, RadioGroupItem } from "../../components/ui/RadioGroup";
 import { Separator } from "../../components/ui/Separator";
-import { useAddRequest, useGetUser } from "../../hooks/useUser";
 // import { useAddRequest, addRequestSchema, addRequest } from "../../hooks/useRequest"; // adjust import path
 import { returnTypeOfCost } from "../../utils/getTypeOfCost";
 import { addRequestSchema, type addRequest } from "../../types/user.types";
+import { useAddRequest, useGetUser } from "../../hooks/useUser";
 
 export default function BookingFlowPage() {
   const { id } = useParams();
@@ -42,11 +42,11 @@ export default function BookingFlowPage() {
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm<addRequest, any, addRequest>({
+  } = useForm<addRequest>({
     resolver: zodResolver(addRequestSchema),
     defaultValues: {
-      planId: helper?.maidProfile.plans?.[0]?.id ?? "",
-      startData: new Date().toISOString().split("T")[0] as unknown as Date,
+      planId: helper?.maidProfile?.plans?.[0]?.id ?? "",
+      startData: new Date(),
     },
   });
 
@@ -157,7 +157,7 @@ export default function BookingFlowPage() {
                         onValueChange={field.onChange}
                         className="grid grid-cols-1 sm:grid-cols-2 gap-4"
                       >
-                        {helper?.maidProfile?.plans?.map((plan) => (
+                        {helper?.maidProfile.plans?.map((plan) => (
                           <div key={plan.id}>
                             <RadioGroupItem
                               value={plan.id}
@@ -361,7 +361,7 @@ export default function BookingFlowPage() {
                 <div>
                   <p className="font-medium">{helper?.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {helper?.maidProfile?.skill.join(" & ")}
+                    {helper?.maidProfile.skill.join(" & ")}
                   </p>
                 </div>
               </div>

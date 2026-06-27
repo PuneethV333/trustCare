@@ -78,16 +78,16 @@ enum PlanTypes {
 }
 
 model Plans {
-    id                String    @id @default(cuid())
+    id                String         @id @default(cuid())
     cost              Int
-    type              PlanTypes @default(monthly)
+    type              PlanTypes      @default(monthly)
     duration          Int
     dailyWorkingHours Int
-    noOfSubs          Int       @default(0)
-    maidProfileId String?
-    maidProfile   MaidProfile?   @relation(fields: [maidProfileId], references: [id])
-    subscriptions Subscription[]
-    requests      Request[]
+    noOfSubs          Int            @default(0)
+    maidProfileId     String?
+    maidProfile       MaidProfile?   @relation(fields: [maidProfileId], references: [id])
+    subscriptions     Subscription[]
+    requests          Request[]
 }
 
 model Subscription {
@@ -110,11 +110,11 @@ enum Status {
 }
 
 model Request {
-    id     String @id @default(cuid())
-    userId String
-    planId String
-    user User  @relation(fields: [userId], references: [id])
-    plan Plans @relation(fields: [planId], references: [id])
-    status Status @default(Pending)
+    id        String   @id @default(cuid())
+    userId    String
+    planId    String
+    user      User     @relation(fields: [userId], references: [id])
+    plan      Plans    @relation(fields: [planId], references: [id])
+    status    Status   @default(Pending)
     startDate DateTime @default(now())
 }

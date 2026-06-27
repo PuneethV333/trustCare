@@ -136,7 +136,7 @@ export const IGetUser = z.object({
         isVerified: z.boolean(),
         profileCompletion: z.number(),
         plans: z.array(z.object({
-            id:z.string(),
+            id: z.string(),
             cost: z.number(),
             dailyWorkingHours: z.number(),
             duration: z.number(),
@@ -184,3 +184,36 @@ export const addedRequestSchema = z.object({
 })
 
 export type addedRequest = z.infer<typeof addedRequestSchema>
+
+export const requests = z.object({
+    id: z.string(),
+    startDate: z.coerce.date(),
+    status: z.enum(["Pending", "Accepted", "Rejected"]),
+    plan: z.object({
+        cost: z.number(),
+        dailyWorkingHours: z.number(),
+        maidProfile: z.object({
+            user: z.object({
+                name: z.string(),
+                profilePic: z.url()
+            })
+        }),
+        type: z.enum(["hourly", "monthly", "yearly"])
+    }),
+    user:z.object({
+        id:z.string(),
+        name:z.string(),
+        profilePic:z.url(),
+    }).optional()
+})
+
+export type requestType = z.infer<typeof requests>
+
+export const updateMeSchema = z.object({
+    name: z.string(),
+    profilePic: z.url(),
+    email: z.email(),
+    phoneNumber: z.string()
+})
+
+export type updateMeType = z.infer<typeof updateMeSchema>

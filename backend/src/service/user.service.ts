@@ -1,8 +1,9 @@
 import { prisma } from "../config/prisma";
 import { addRequest } from "../types/maid.types";
+import { updateMeType } from "../types/user.types";
 
 export const getUserService = async (id: string) => {
-    const user =  await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
         where: { id },
         include: {
             maidProfile: {
@@ -24,7 +25,7 @@ export const getUserService = async (id: string) => {
         },
     });
     return user
-    
+
 };
 
 export const addRequestService = async (firebaseUid: string, maidId: string, payload: addRequest) => {
@@ -54,3 +55,38 @@ export const addRequestService = async (firebaseUid: string, maidId: string, pay
 
     return res
 }
+
+
+export const getMyRequestService = async (firebaseUid: string) => {
+    const user = await prisma.user.findUnique({
+        where: { firebaseUid }
+    })
+    return await prisma.request.findMany({
+        where: {
+            userId: user?.id,
+        },
+        include: {
+            plan: {
+                include: {
+                    maidProfile: {
+                        include: {
+                            user: true
+                        }
+                    }
+                }
+            }
+        }
+    })
+}
+
+
+export const updateMeService = async (firebaseUid: string, payload: updateMeType) =>
+    await prisma.user.update({
+        where: { firebaseUid },
+        data: {
+            name: payload.name,
+            profilePic: payload.profilePic,
+            email: payload.email,
+            phoneNumber: payload.phoneNumber,
+        }
+    })

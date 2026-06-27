@@ -1,23 +1,66 @@
-import React from 'react';
-import { User, MapPin, CreditCard, Shield, Bell } from 'lucide-react';
-import { Button } from '../../components/ui/Button';
+// AccountPage.tsx
+import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "../../components/ui/Button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle } from
-'../../components/ui/Card';
-import { Input } from '../../components/ui/Input';
-import { Label } from '../../components/ui/Label';
+  CardTitle,
+} from "../../components/ui/Card";
+import { Input } from "../../components/ui/Input";
+import { Label } from "../../components/ui/Label";
+import { Tabs, TabsContent } from "../../components/ui/Tabs";
 import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger } from
-'../../components/ui/Tabs';
-import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/Avatar';
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/Avatar";
+import { updateMeSchema, updateMeType } from "../../types/user.types";
+import { useUpdateMe } from "../../hooks/useUser";
+import { useGetMe } from "../../hooks/useAuth";
+import { getImgUrl } from "../../utils/getUrl";
+
 export default function AccountPage() {
+  const { data: me } = useGetMe();
+  const { mutate: updateMe, isPending } = useUpdateMe();
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<updateMeType>({
+    resolver: zodResolver(updateMeSchema),
+    values: {
+      name: me?.name ?? "",
+      email: me?.email ?? "",
+      phoneNumber: me?.phoneNumber ?? "",
+      profilePic: me?.profilePic ?? "",
+    },
+  });
+
+  const profilePic = watch("profilePic");
+
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await getImgUrl(file);
+      setValue("profilePic", url, { shouldValidate: true });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const onSubmit = (data: updateMeType) => updateMe(data);
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
@@ -25,35 +68,8 @@ export default function AccountPage() {
       <div className="flex flex-col md:flex-row gap-8">
         <Tabs
           defaultValue="profile"
-          className="flex-1 flex flex-col md:flex-row gap-8">
-          
-          <TabsList className="flex flex-col h-auto bg-transparent items-start w-full md:w-64 shrink-0 space-y-1 p-0">
-            <TabsTrigger
-              value="profile"
-              className="w-full justify-start px-4 py-2 data-[state=active]:bg-muted">
-              
-              <User className="h-4 w-4 mr-2" /> Profile Information
-            </TabsTrigger>
-            <TabsTrigger
-              value="addresses"
-              className="w-full justify-start px-4 py-2 data-[state=active]:bg-muted">
-              
-              <MapPin className="h-4 w-4 mr-2" /> Saved Addresses
-            </TabsTrigger>
-            <TabsTrigger
-              value="payments"
-              className="w-full justify-start px-4 py-2 data-[state=active]:bg-muted">
-              
-              <CreditCard className="h-4 w-4 mr-2" /> Payment Methods
-            </TabsTrigger>
-            <TabsTrigger
-              value="security"
-              className="w-full justify-start px-4 py-2 data-[state=active]:bg-muted">
-              
-              <Shield className="h-4 w-4 mr-2" /> Security
-            </TabsTrigger>
-          </TabsList>
-
+          className="flex-1 flex flex-col md:flex-row gap-8"
+        >
           <div className="flex-1">
             <TabsContent value="profile" className="m-0">
               <Card>
@@ -64,93 +80,77 @@ export default function AccountPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="flex items-center gap-6">
-                    <Avatar className="h-20 w-20">
-                      <AvatarImage src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
-                      <AvatarFallback>PS</AvatarFallback>
-                    </Avatar>
-                    <Button variant="outline">Change Photo</Button>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="firstName">First Name</Label>
-                      <Input id="firstName" defaultValue="Priya" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="lastName">Last Name</Label>
-                      <Input id="lastName" defaultValue="Sharma" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        defaultValue="priya@example.com" />
-                      
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        defaultValue="+91 98765 43210" />
-                      
-                    </div>
-                  </div>
-
-                  <Button>Save Changes</Button>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Other tabs would go here */}
-            <TabsContent value="addresses" className="m-0">
-              <Card>
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <CardTitle>Saved Addresses</CardTitle>
-                      <CardDescription>
-                        Manage your service locations.
-                      </CardDescription>
-                    </div>
-                    <Button size="sm">Add New</Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="border rounded-lg p-4 relative">
-                    <Badge
-                      className="absolute top-4 right-4"
-                      variant="secondary">
-                      
-                      Default
-                    </Badge>
-                    <h4 className="font-medium mb-1">Home</h4>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      A-402, Sunshine Apts, Andheri West
-                      <br />
-                      Mumbai, Maharashtra 400053
-                    </p>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
-                        Edit
-                      </Button>
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <input
+                      title="file"
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handlePhotoChange}
+                    />
+                    <div className="flex items-center gap-6">
+                      <Avatar className="h-20 w-20">
+                        <AvatarImage src={profilePic || me?.profilePic} />
+                        <AvatarFallback>
+                          {me?.name?.charAt(0).toUpperCase() ?? "?"}
+                        </AvatarFallback>
+                      </Avatar>
                       <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-destructive">
-                        
-                        Delete
+                        type="button"
+                        variant="outline"
+                        disabled={uploading}
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        {uploading ? "Uploading..." : "Change Photo"}
                       </Button>
                     </div>
-                  </div>
+
+                    {/* Fields */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Name</Label>
+                        <Input id="name" {...register("name")} />
+                        {errors.name && (
+                          <p className="text-sm text-destructive">
+                            {errors.name.message}
+                          </p>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" type="email" {...register("email")} />
+                        {errors.email && (
+                          <p className="text-sm text-destructive">
+                            {errors.email.message}
+                          </p>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="phoneNumber">Phone</Label>
+                        <Input
+                          id="phoneNumber"
+                          type="tel"
+                          {...register("phoneNumber")}
+                        />
+                        {errors.phoneNumber && (
+                          <p className="text-sm text-destructive">
+                            {errors.phoneNumber.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <Button type="submit" disabled={isPending || uploading}>
+                      {isPending ? "Saving..." : "Save Changes"}
+                    </Button>
+                  </form>
                 </CardContent>
               </Card>
             </TabsContent>
           </div>
         </Tabs>
       </div>
-    </div>);
-
+    </div>
+  );
 }

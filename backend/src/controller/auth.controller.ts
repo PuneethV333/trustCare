@@ -115,3 +115,4 @@ export const completeOnBoardingForMaids = async (req: Request, res: Response) =>
         res.status(500).json(getError(err))
     }
 }
+
