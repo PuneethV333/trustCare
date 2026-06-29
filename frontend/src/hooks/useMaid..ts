@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { acceptRequestApi, getMaidsApi, getMyRequestsApi, getTopMaidsApi, rejectRequestApi } from "../api/maid.api";
-import { requestType } from "../types/user.types";
+import { acceptRequestApi, getMaidsApi, getMyJobsApi, getMyRequestsApi, getTopMaidsApi, rejectRequestApi } from "../api/maid.api";
 
 export const useGetTopMaids = () =>
     useQuery({
@@ -51,3 +50,9 @@ export const useRejectRequest = () => {
         },
     });
 };
+
+export const useGetMyJobs = () =>
+    useQuery({
+        queryKey:["my","jobs"],
+        queryFn:getMyJobsApi
+    })

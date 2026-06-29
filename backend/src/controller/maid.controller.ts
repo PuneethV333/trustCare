@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { getError } from "../utils/error.utils";
-import { acceptRequestService, getMaidsService, getMyRequestService, getTop4MaidsService, rejectRequestService } from "../service/maid.service";
+import { acceptRequestService, getMaidsService, getMyJobService, getMyRequestService, getTop4MaidsService, rejectRequestService } from "../service/maid.service";
 
 export const getTop4Maids = async (_: Request, res: Response) => {
     try {
@@ -87,3 +87,16 @@ export const rejectRequest = async (req: Request, res: Response) => {
     }
 }
 
+export const getMyJobs = async (req: Request, res: Response) => {
+    try {
+        const firebaseUid = req.user!.firebaseUid
+
+        const result = await getMyJobService(firebaseUid)
+
+        return res.status(200).json({
+            data: result
+        })
+    } catch (err) {
+        return res.status(500).json(getError(err))
+    }
+}

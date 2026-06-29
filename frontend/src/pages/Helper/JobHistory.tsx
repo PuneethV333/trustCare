@@ -2,51 +2,21 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle } from
-'../../components/ui/Card';
-import { Badge } from '../../components/ui/Badge';
+  CardTitle,
+} from "../../components/ui/Card";
+import { Badge } from "../../components/ui/Badge";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow } from
-'../../components/ui/Table';
+  TableRow,
+} from "../../components/ui/Table";
+import { useGetMyJobs } from "../../hooks/useMaid.";
+import { returnTypeOfCost } from "../../utils/getTypeOfCost";
 export default function HelperJobHistoryPage() {
-  const jobs = [
-  {
-    id: 'JOB-1029',
-    client: 'Priya Sharma',
-    type: 'Monthly Maid',
-    date: 'Oct 2026 - Present',
-    status: 'Active',
-    amount: '₹12,000/mo'
-  },
-  {
-    id: 'JOB-0982',
-    client: 'Rahul Mehta',
-    type: 'Hourly Cook',
-    date: 'Oct 12, 2026',
-    status: 'Completed',
-    amount: '₹800'
-  },
-  {
-    id: 'JOB-0844',
-    client: 'Anita Desai',
-    type: 'Babysitter',
-    date: 'Sep 25, 2026',
-    status: 'Completed',
-    amount: '₹1,200'
-  },
-  {
-    id: 'JOB-0712',
-    client: 'Vikram Singh',
-    type: 'Monthly Maid',
-    date: 'Jan 2026 - Aug 2026',
-    status: 'Completed',
-    amount: '₹84,000 (Total)'
-  }];
+  const { data: jobs } = useGetMyJobs();
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -93,7 +63,6 @@ export default function HelperJobHistoryPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Job ID</TableHead>
                 <TableHead>Client</TableHead>
                 <TableHead>Service Type</TableHead>
                 <TableHead>Date / Duration</TableHead>
@@ -102,30 +71,26 @@ export default function HelperJobHistoryPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {jobs.map((job) =>
-              <TableRow key={job.id}>
-                  <TableCell className="font-medium">{job.id}</TableCell>
-                  <TableCell>{job.client}</TableCell>
-                  <TableCell>{job.type}</TableCell>
-                  <TableCell>{job.date}</TableCell>
+              {jobs?.map((job) => (
+                <TableRow key={job.id}>
+                  <TableCell>{job.user.name}</TableCell>
+                  <TableCell>{job.plan.type}</TableCell>
+                  <TableCell>{job.startDate.split("T")[0]}</TableCell>
                   <TableCell>
-                    <Badge
-                    variant={
-                    job.status === 'Active' ? 'default' : 'secondary'
-                    }>
-                    
-                      {job.status}
+                    <Badge variant={job.active ? "default" : "secondary"}>
+                      {job.active ? "Active" : "Completed"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right font-medium">
-                    {job.amount}
+                    {job.plan.cost}
+                    {returnTypeOfCost(job.plan.type)}
                   </TableCell>
                 </TableRow>
-              )}
+              ))}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
-    </div>);
-
+    </div>
+  );
 }

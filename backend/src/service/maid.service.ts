@@ -140,7 +140,7 @@ export const acceptRequestService = async (
         }
 
         // Prevent duplicate active subscriptions
-       
+
 
         // Create subscription
         const subscription = await tx.subscription.create({
@@ -227,3 +227,32 @@ export const rejectRequestService = async (
         });
     });
 };
+
+
+export const getMyJobService = async (firebaseUid: string) => {
+    const user = await prisma.user.findUnique({
+        where: { firebaseUid }
+    })
+
+    if (!user) {
+        throw new Error("User not found")
+    }
+
+
+    const jobs = await prisma.subscription.findMany({
+        where: {
+
+            plan: {
+                maidProfile: {
+                    userId: user.id
+                }
+            }
+        },
+        include: {
+            user: true,
+            plan: true
+        }
+    })
+
+    return jobs
+}
